@@ -43,6 +43,37 @@ class TablesSectionsController {
             next(error)
         }
     }
+    
+    async update(request: Request, response: Response, next: NextFunction) {
+        try {
+            const id = z
+                .string()
+                .transform((value) => Number(value))
+                .refine((value) => !isNaN(value), { message: "id must be a number"})
+                .parse(request.params.id)
+
+            const section = await knex<TablesSectionsRepository>("table_sections")
+                .where({ id })
+                .first()
+
+            if(!section){
+                throw new AppError("section not found")
+            }
+
+            if(section.closed_at){
+                throw new AppError("this section table is already closed")
+            }
+
+            await knex<TablesSectionsRepository>("table_sections")
+                .update({ closed_at: knex.fn.now()})
+                .where({ id })
+
+            return response.json()
+            
+        } catch(error) {
+            next(error)
+        }
+    }
 }
 
 export { TablesSectionsController }
