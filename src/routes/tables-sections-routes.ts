@@ -5,6 +5,7 @@ import { TablesSectionsController } from "@/controllers/tables-sections-controll
 const tablesSectionsRouter = Router()
 const tablesSectionsController = new TablesSectionsController
 
+tablesSectionsRouter.get("/", tablesSectionsController.index)
 tablesSectionsRouter.post("/", tablesSectionsController.create)
 
 export { tablesSectionsRouter }
